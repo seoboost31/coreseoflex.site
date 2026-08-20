@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CoreSEO Flex — Modular SEO Toolkit for Any Stack</title>
+<meta name="description" content="Drop-in SEO modules for WordPress, Shopify, Webflow, and custom stacks — schema, sitemaps, redirects, and meta management, installed piece by piece.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700&family=Work+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --teal:#0E9E98;
+    --charcoal:#1B1F23;
+    --amber:#F5A623;
+    --paper:#F2F3EF;
+    --white:#FFFFFF;
+    --ink:#191C1E;
+    --ink-60: rgba(25,28,30,0.62);
+    --ink-30: rgba(25,28,30,0.22);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.display{font-family:'Lexend', sans-serif; font-weight:600;}
+  .mono{
+    font-family:'IBM Plex Mono', monospace;
+    text-transform:uppercase;
+    letter-spacing:0.14em;
+    font-size:0.68rem;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{max-width:100%; display:block; object-fit:cover;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 clamp(20px,5vw,60px);}
+  .reveal{opacity:0; transform:translateY(22px); transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1; transform:translateY(0);}
+
+  /* ---------- signature: module-block rule ---------- */
+  .block-rule{
+    width:100%; height:16px;
+    display:flex; gap:2px; background:rgba(25,28,30,0.1); padding:2px 0;
+  }
+  .block-rule span{flex:1; background:var(--teal);}
+  .block-rule span:nth-child(3n){background:var(--amber);}
+  .block-rule span:nth-child(5n){background:var(--charcoal);}
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    background:rgba(242,243,239,0.92);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid rgba(25,28,30,0.1);
+  }
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px clamp(20px,5vw,60px);}
+  .logo{display:flex; align-items:center; gap:10px; font-family:'Lexend',sans-serif; font-size:1.08rem;}
+  .logo-mark{width:26px; height:26px;}
+  .logo em{font-style:normal; color:var(--teal);}
+  .nav-links{display:flex; gap:26px; align-items:center;}
+  .nav-links a{font-family:'IBM Plex Mono', monospace; font-size:0.63rem; text-transform:uppercase; letter-spacing:0.1em; position:relative; padding-bottom:3px;}
+  .nav-links a::after{content:''; position:absolute; left:0; bottom:0; width:0; height:1px; background:var(--teal); transition:width .3s ease;}
+  .nav-links a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--charcoal); color:var(--paper);
+    padding:10px 20px; font-family:'IBM Plex Mono',monospace; font-size:0.62rem;
+    text-transform:uppercase; letter-spacing:0.1em;
+  }
+  .nav-toggle{display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer;}
+  .nav-toggle span{width:22px; height:1.5px; background:var(--ink);}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative; min-height:92vh;
+    display:flex; align-items:center;
+    padding-top:100px;
+    background:var(--charcoal); color:var(--paper);
+  }
+  .hero-inner{position:relative; z-index:2; width:100%;}
+  .badge-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    border:1px solid var(--amber); color:var(--amber);
+    padding:7px 14px; margin-bottom:26px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.63rem; letter-spacing:0.12em; text-transform:uppercase;
+  }
+  .hero h1{font-size:clamp(2.6rem,5.8vw,4.6rem); line-height:1.06; max-width:780px;}
+  .hero h1 span{color:var(--teal);}
+  .hero-sub{margin-top:28px; max-width:500px; font-size:1.05rem; line-height:1.75; color:rgba(242,243,239,0.7);}
+  .hero-cta{margin-top:38px; display:flex; gap:16px; flex-wrap:wrap;}
+  .btn{
+    display:inline-block; padding:15px 28px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    text-transform:uppercase; letter-spacing:0.12em;
+    background:var(--teal); color:var(--charcoal); border:1px solid var(--teal);
+    transition:background .3s ease, color .3s ease;
+  }
+  .btn:hover{background:transparent; color:var(--teal);}
+  .btn-line{background:transparent; color:var(--paper); border:1px solid rgba(242,243,239,0.3);}
+  .btn-line:hover{background:rgba(242,243,239,0.08);}
+
+  .platform-row{
+    margin-top:64px; padding-top:26px; border-top:1px solid rgba(242,243,239,0.16);
+    display:flex; gap:clamp(24px,5vw,50px); flex-wrap:wrap; align-items:center;
+  }
+  .platform-row span{font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.08em; color:rgba(242,243,239,0.55);}
+  .platform-pill{
+    border:1px solid rgba(242,243,239,0.25); padding:7px 14px;
+    font-family:'Lexend',sans-serif; font-size:0.82rem; color:var(--paper);
+  }
+
+  /* ---------- section shell ---------- */
+  section{padding:110px 0;}
+  .section-head{display:flex; justify-content:space-between; align-items:flex-end; gap:36px; margin-bottom:58px; flex-wrap:wrap;}
+  .section-head .mono{color:var(--teal); display:block; margin-bottom:12px;}
+  .section-head h2{font-size:clamp(2rem,4.2vw,3rem); max-width:560px;}
+  .section-head p{max-width:320px; color:var(--ink-60); line-height:1.7; font-size:0.94rem;}
+
+  /* ---------- modules grid ---------- */
+  .modules{background:var(--paper);}
+  .m-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:2px; background:rgba(25,28,30,0.1);}
+  .m-card{background:var(--paper); padding:34px 26px; transition:background .3s ease;}
+  .m-card:hover{background:var(--white);}
+  .m-tag{
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:0.6rem;
+    text-transform:uppercase; letter-spacing:0.08em; color:var(--teal);
+    border:1px solid var(--teal); padding:3px 8px; margin-bottom:18px;
+  }
+  .m-card h3{font-size:1.05rem; margin-bottom:10px;}
+  .m-card p{font-size:0.86rem; color:var(--ink-60); line-height:1.65;}
+
+  /* ---------- team photo band ---------- */
+  .team-band{position:relative; min-height:56vh; display:flex; align-items:center; overflow:hidden;}
+  .team-band img{position:absolute; inset:0; width:100%; height:100%;}
+  .team-band::after{content:''; position:absolute; inset:0; background:linear-gradient(90deg, rgba(25,28,30,0.9), rgba(25,28,30,0.3));}
+  .team-content{position:relative; z-index:2; color:var(--white); max-width:560px;}
+  .team-content .mono{color:var(--amber); margin-bottom:16px; display:block;}
+  .team-content h2{font-size:clamp(1.9rem,4.2vw,2.8rem); margin-bottom:18px;}
+  .team-content p{color:rgba(242,243,239,0.8); line-height:1.8; font-size:1rem;}
+
+  /* ---------- install steps ---------- */
+  .install{background:var(--teal); color:var(--white);}
+  .install .section-head .mono{color:var(--charcoal);}
+  .install .section-head p{color:rgba(255,255,255,0.72);}
+  .i-list{border-top:1px solid rgba(255,255,255,0.22);}
+  .i-item{
+    display:grid; grid-template-columns:90px 1fr 1fr; gap:30px;
+    padding:30px 0; border-bottom:1px solid rgba(255,255,255,0.22); align-items:start;
+  }
+  .i-num{font-family:'Lexend',sans-serif; font-size:1.25rem; color:var(--charcoal);}
+  .i-item h3{font-size:1.15rem; margin-bottom:6px;}
+  .i-item p{color:rgba(255,255,255,0.78); font-size:0.92rem; line-height:1.7;}
+
+  /* ---------- band ---------- */
+  .band{background:var(--amber); color:var(--charcoal); padding:90px 0; text-align:center;}
+  .band h2{font-size:clamp(1.8rem,4.4vw,2.6rem); max-width:740px; margin:0 auto 20px; font-weight:500;}
+  .band .mono{color:var(--teal); display:block; margin-top:16px;}
+
+  /* ---------- pricing ---------- */
+  .pricing{background:var(--paper);}
+  .pr-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:24px;}
+  .pr-card{background:var(--white); border:1px solid rgba(25,28,30,0.1); padding:38px 30px; display:flex; flex-direction:column; height:100%;}
+  .pr-card.featured{background:var(--charcoal); color:var(--paper); border-color:var(--charcoal);}
+  .pr-name{font-family:'Lexend',sans-serif; font-size:1.2rem; margin-bottom:8px;}
+  .pr-price{font-family:'IBM Plex Mono',monospace; font-size:1.05rem; color:var(--teal); margin-bottom:20px;}
+  .pr-card.featured .pr-price{color:var(--amber);}
+  .pr-list{list-style:none; margin-bottom:26px; flex:1;}
+  .pr-list li{font-size:0.86rem; padding:9px 0; border-bottom:1px solid rgba(25,28,30,0.1); color:var(--ink-60);}
+  .pr-card.featured .pr-list li{border-bottom-color:rgba(242,243,239,0.16); color:rgba(242,243,239,0.75);}
+  .pr-card .btn{text-align:center; width:100%;}
+
+  /* ---------- signup ---------- */
+  .signup{background:var(--paper);}
+  .signup-box{
+    background:var(--charcoal); color:var(--paper);
+    padding:clamp(44px,7vw,80px);
+    display:grid; grid-template-columns:1.2fr 1fr; gap:44px; align-items:center;
+  }
+  .signup-box h2{font-size:clamp(1.9rem,4.2vw,2.6rem); margin-bottom:14px;}
+  .signup-box p{color:rgba(242,243,239,0.65); line-height:1.7; max-width:400px;}
+  .signup-form{display:flex; gap:0; border-bottom:1px solid rgba(242,243,239,0.32); padding-bottom:12px;}
+  .signup-form input{
+    flex:1; background:transparent; border:none; outline:none;
+    color:var(--paper); font-family:'Work Sans',sans-serif; font-size:1rem;
+  }
+  .signup-form input::placeholder{color:rgba(242,243,239,0.4);}
+  .signup-form button{
+    background:none; border:none; color:var(--amber);
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em;
+    cursor:pointer; padding-left:16px;
+  }
+
+  /* ---------- footer ---------- */
+  footer{background:var(--charcoal); color:rgba(242,243,239,0.55); padding:64px 0 26px;}
+  .foot-grid{display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:36px; padding-bottom:44px;}
+  .foot-brand .logo{color:var(--paper); margin-bottom:14px;}
+  .foot-brand p{font-size:0.85rem; line-height:1.7; max-width:270px;}
+  .foot-col .mono{color:var(--amber); display:block; margin-bottom:16px;}
+  .foot-col a{display:block; font-size:0.85rem; margin-bottom:9px; color:rgba(242,243,239,0.6);}
+  .foot-col a:hover{color:var(--paper);}
+  .foot-bottom{display:flex; justify-content:space-between; flex-wrap:wrap; gap:12px; padding-top:22px; border-top:1px solid rgba(242,243,239,0.12); font-size:0.74rem;}
+
+  @media (max-width:920px){
+    .nav-links{display:none;}
+    .nav-toggle{display:flex;}
+    .m-grid{grid-template-columns:repeat(2,1fr);}
+    .i-item{grid-template-columns:60px 1fr;}
+    .i-item p{grid-column:2/3;}
+    .pr-grid{grid-template-columns:1fr;}
+    .signup-box{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr 1fr;}
+  }
+  @media (max-width:560px){
+    .m-grid{grid-template-columns:1fr;}
+    .foot-grid{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="logo">
+      <svg class="logo-mark" viewBox="0 0 40 40" fill="none">
+        <rect x="5" y="5" width="12" height="12" fill="#0E9E98"/>
+        <rect x="21" y="5" width="12" height="12" fill="#1B1F23"/>
+        <rect x="5" y="21" width="12" height="12" fill="#1B1F23"/>
+        <rect x="21" y="21" width="12" height="12" fill="#F5A623"/>
+      </svg>
+      coreseo <em>flex</em>
+    </div>
+    <div class="nav-links">
+      <a href="#modules">Modules</a>
+      <a href="#install">Install</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#signup" class="nav-cta">Start Free</a>
+    </div>
+    <button class="nav-toggle" aria-label="menu"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="badge-tag">Modular. Not monolithic.</div>
+    <h1>SEO tooling you install<br><span>piece by piece.</span></h1>
+    <p class="hero-sub">CoreSEO Flex ships as independent modules — schema, sitemaps, redirects, meta management — so you install exactly what your stack needs and skip the rest of the plugin nobody uses.</p>
+    <div class="hero-cta">
+      <a href="#signup" class="btn">Start Free</a>
+      <a href="#modules" class="btn btn-line">Browse Modules</a>
+    </div>
+    <div class="platform-row">
+      <span>Works with</span>
+      <span class="platform-pill">WordPress</span>
+      <span class="platform-pill">Shopify</span>
+      <span class="platform-pill">Webflow</span>
+      <span class="platform-pill">Next.js</span>
+      <span class="platform-pill">Custom REST API</span>
+    </div>
+  </div>
+</section>
+
+<div class="block-rule">
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
+
+<section class="modules" id="modules">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <span class="mono">The modules</span>
+        <h2>Six blocks, installed independently</h2>
+      </div>
+      <p>Each module ships as its own package — updating one never touches the others.</p>
+    </div>
+    <div class="m-grid reveal">
+      <div class="m-card">
+        <span class="m-tag">core</span>
+        <h3>Meta Manager</h3>
+        <p>Bulk-edit titles and descriptions with live SERP previews, templated by content type.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">core</span>
+        <h3>Schema Builder</h3>
+        <p>Structured data for products, articles, and FAQs, validated against Google's spec on save.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">core</span>
+        <h3>Sitemap Engine</h3>
+        <p>Auto-generated, auto-updating XML sitemaps that ping search engines on every change.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">core</span>
+        <h3>Redirect Manager</h3>
+        <p>Bulk redirect imports and 404 monitoring, with automatic suggestions for broken internal links.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">add-on</span>
+        <h3>Core Web Vitals Monitor</h3>
+        <p>Ongoing performance tracking tied directly to the pages it's actually affecting rankings on.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">add-on</span>
+        <h3>Internal Link Suggestor</h3>
+        <p>Scans new content and suggests relevant internal links from your existing published pages.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">add-on</span>
+        <h3>Multi-Site Sync</h3>
+        <p>Push module configs across multiple sites or storefronts from a single control panel.</p>
+      </div>
+      <div class="m-card">
+        <span class="m-tag">add-on</span>
+        <h3>Audit Log</h3>
+        <p>Full change history on every SEO setting, with rollback for anyone who's edited the wrong field.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="team-band">
+  <img src="https://images.unsplash.com/photo-1758873268745-dd2cf0d677b5?fm=jpg&q=80&w=2000&auto=format&fit=crop" alt="A team collaborating around a computer screen">
+  <div class="wrap">
+    <div class="team-content reveal">
+      <span class="mono">Built for real teams</span>
+      <h2>Marketing configures it, engineering doesn't babysit it</h2>
+      <p>Every module has a plain-language settings panel for marketing, plus a documented API for engineering to hook into CI/CD — nobody's stuck waiting on the other team.</p>
+    </div>
+  </div>
+</section>
+
+<section class="install" id="install">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <span class="mono">Installation</span>
+        <h2>Live in under fifteen minutes</h2>
+      </div>
+      <p>Same flow whether you're on WordPress or a custom stack.</p>
+    </div>
+    <div class="i-list reveal">
+      <div class="i-item">
+        <div class="i-num">01</div>
+        <h3>Connect your platform</h3>
+        <p>One-click connect for WordPress, Shopify, and Webflow, or an API key for custom stacks.</p>
+      </div>
+      <div class="i-item">
+        <div class="i-num">02</div>
+        <h3>Choose your modules</h3>
+        <p>Enable only what you need — each module installs independently in seconds.</p>
+      </div>
+      <div class="i-item">
+        <div class="i-num">03</div>
+        <h3>Import existing settings</h3>
+        <p>We detect and import redirects, meta, and schema from most existing SEO plugins automatically.</p>
+      </div>
+      <div class="i-item">
+        <div class="i-num">04</div>
+        <h3>Go live</h3>
+        <p>Changes take effect immediately, with a rollback option if anything doesn't look right.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap reveal">
+    <h2>"We only needed schema and redirects. Installing two modules instead of one bloated plugin actually made the site faster."</h2>
+    <span class="mono">— Lead Engineer, e-commerce platform</span>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div>
+        <span class="mono">Pricing</span>
+        <h2>Pay for the modules you actually use</h2>
+      </div>
+      <p>Every plan includes unlimited pages — pricing scales by modules enabled, not traffic.</p>
+    </div>
+    <div class="pr-grid reveal">
+      <div class="pr-card">
+        <div class="pr-name">Core</div>
+        <div class="pr-price">Free</div>
+        <ul class="pr-list">
+          <li>Meta Manager</li>
+          <li>Sitemap Engine</li>
+          <li>1 connected site</li>
+        </ul>
+        <a href="#signup" class="btn btn-line" style="color:var(--ink); border-color:var(--ink-30);">Start Free</a>
+      </div>
+      <div class="pr-card featured">
+        <div class="pr-name">Flex</div>
+        <div class="pr-price">$39 / month</div>
+        <ul class="pr-list">
+          <li>All 4 core modules</li>
+          <li>2 add-on modules included</li>
+          <li>5 connected sites</li>
+          <li>API access</li>
+        </ul>
+        <a href="#signup" class="btn">Start Free Trial</a>
+      </div>
+      <div class="pr-card">
+        <div class="pr-name">Scale</div>
+        <div class="pr-price">Custom</div>
+        <ul class="pr-list">
+          <li>All modules included</li>
+          <li>Unlimited connected sites</li>
+          <li>Multi-Site Sync &amp; Audit Log</li>
+        </ul>
+        <a href="#signup" class="btn btn-line" style="color:var(--ink); border-color:var(--ink-30);">Talk to Sales</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="signup" id="signup">
+  <div class="wrap">
+    <div class="signup-box reveal">
+      <div>
+        <h2>Start with the free tier</h2>
+        <p>No credit card required — connect a site and start with the Meta Manager and Sitemap Engine modules today.</p>
+      </div>
+      <form class="signup-form" onsubmit="return false;">
+        <input type="email" placeholder="you@company.com" required>
+        <button type="submit">Start →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="logo">coreseo <em style="font-style:normal;color:var(--amber);">flex</em></div>
+        <p>Modular SEO tooling for WordPress, Shopify, Webflow, and custom stacks — install only what you need.</p>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Product</span>
+        <a href="#modules">All modules</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">API docs</a>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Company</span>
+        <a href="#install">Installation</a>
+        <a href="#">Status</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="foot-col">
+        <span class="mono">Resources</span>
+        <a href="#">Changelog</a>
+        <a href="#">Migration guides</a>
+        <a href="#">Help center</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 CoreSEO Flex. Modular SEO tooling.</span>
+      <span>coreseoflex.site</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:0.15});
+  revealEls.forEach(el=>io.observe(el));
+
+  const toggle = document.querySelector('.nav-toggle');
+  const links = document.querySelector('.nav-links');
+  toggle?.addEventListener('click', ()=>{
+    const open = links.style.display === 'flex';
+    links.style.display = open ? 'none' : 'flex';
+    links.style.cssText += open ? '' : 'position:fixed;top:64px;left:0;right:0;background:#F2F3EF;flex-direction:column;padding:24px;gap:18px;border-bottom:1px solid rgba(25,28,30,0.1);';
+  });
+</script>
+
+</body>
+</html>
